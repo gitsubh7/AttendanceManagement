@@ -117,27 +117,26 @@ const deleteStudent = async (req, res) => {
 };
 
 const getAllClassrooms = async (req, res) => {
-  try {
-    const { studentId } = req.params;
-    const sqlQuery = "SELECT mergedClassroomId FROM students WHERE studentId=?";
-    const rows = await pool.query(sqlQuery, [studentId]);
-    if (rows.length===0) {
-      return res.status(404).json({
-        error: "Student not found",
-      });
+    try {
+      const { studentId } = req.params;
+  
+      const sqlQuery = "SELECT mergedClassroomId FROM students WHERE studentId = ?";
+      const rows = await pool.query(sqlQuery, [studentId]);
+      console.log(rows)
+  
+      if (rows.length === 0) {
+        return res.status(404).json({ error: "Student not found" });
+      }
+  
+      const mergedClassroomId = rows[0].mergedClassroomId;
+      const allClassrooms = splitFunction(mergedClassroomId, 5);
+  
+      res.json({ classrooms: allClassrooms });
+    } catch (error) {
+      console.error("Error in getAllClassrooms:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-    const mergedClassroomId = rows[0].mergedClassroomId;
-    const getAllClassrooms = splitFunction(mergedClassroomId, 5);
-    res.status(200).json({
-        classrooms: getAllClassrooms,
-    })
-  } catch (error) {
-    console.error("Error in getAllClassrooms", error);
-    res.status(500).json({
-      error: "Internal Server Error",
-    });
-  }
-};
+  };
 const concatClassroomId = async (req, res) => {
   try {
     let professorCode = req.body.professorCode;
