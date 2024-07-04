@@ -1,7 +1,7 @@
 const express = require("express");
 const pool = require("../helpers/database");
 const fs = require("fs").promises;
-const splitFunction = require("../middleware/splitFunction");
+const splitFunction = require("../middleware/splitFunction.js");
 const filePath = "./helpers/student.sql";
 let tableCreated = false;
 const createStudent = async (req, res) => {
@@ -119,15 +119,18 @@ const deleteStudent = async (req, res) => {
 const getAllClassrooms = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const sqlQuery = "SELECT mergedClassroomID FROM students WHERE studentId=?";
+    const sqlQuery = "SELECT mergedClassroomId FROM students WHERE studentId=?";
     const rows = await pool.query(sqlQuery, [studentId]);
-    if (!rows.length) {
+    if (rows.length===0) {
       return res.status(404).json({
         error: "Student not found",
       });
     }
-    const mergedClassroomID = rows[0].mergedClassroomID;
-    const getAllClassrooms = splitFunction(mergedClassroomID, 5);
+    const mergedClassroomId = rows[0].mergedClassroomId;
+    const getAllClassrooms = splitFunction(mergedClassroomId, 5);
+    res.status(200).json({
+        classrooms: getAllClassrooms,
+    })
   } catch (error) {
     console.error("Error in getAllClassrooms", error);
     res.status(500).json({
