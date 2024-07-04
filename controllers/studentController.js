@@ -40,7 +40,7 @@ const getStudentById = async (req, res) => {
         }
 
         const sqlQuery = "SELECT * FROM students WHERE studentId = ?";
-        const [rows, fields] = await pool.query(sqlQuery, [studentId]);
+        const [rows] = await pool.query(sqlQuery, [studentId]);
 
         if (rows.length === 0) {
             return res.status(404).json({

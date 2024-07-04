@@ -5,8 +5,10 @@ dotenv.config({path:".env"})
 const PORT=process.env.PORT || 3000
 const userroute=require("./routes/userRoute.js")
 const studentroute=require("./routes/studentRoute.js")
-const classroute=require("./routes/classRoute.js")
+const classroute=require("./routes/classroomRoute.js")
+
 const app=express();
+
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}))
